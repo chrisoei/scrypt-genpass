@@ -30,7 +30,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-bin_PROGRAMS = scrypt$(EXEEXT)
+bin_PROGRAMS = scrypt-genpass$(EXEEXT)
 subdir = .
 DIST_COMMON = $(am__configure_deps) $(dist_man_MANS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
@@ -264,8 +264,8 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-scrypt$(EXEEXT): $(scrypt_OBJECTS) $(scrypt_DEPENDENCIES) 
-	@rm -f scrypt$(EXEEXT)
+scrypt-genpass$(EXEEXT): $(scrypt_OBJECTS) $(scrypt_DEPENDENCIES) 
+	@rm -f scrypt-genpass$(EXEEXT)
 	$(scrypt_LINK) $(scrypt_OBJECTS) $(scrypt_LDADD) $(LIBS)
 
 mostlyclean-compile:
