@@ -1,1 +1,9 @@
 .svn/
+Makefile
+config.h
+*.log
+config.status
+scrypt
+*.o
+stamp-h1
+.deps/
