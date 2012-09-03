@@ -141,13 +141,32 @@ checkparams(uint32_t maxmem, uint32_t megaops,
 	return (0);
 }
 
-static int
-getsalt(uint8_t salt[32], void* site)
+int
+bintohex(char* outstring, size_t nbytes, uint8_t* data)
+{
+	int i;
+	for (i = 0; i < nbytes; i++)
+		sprintf(outstring + 2 * i, "%02x", data[i]);
+	outstring[2 * nbytes] = '\0';
+	return 0;
+}
+
+int
+sha256string(uint8_t hash[32], char* s)
 {
 	SHA256_CTX sha256_ctx;
 	SHA256_Init(&sha256_ctx);
-	SHA256_Update(&sha256_ctx, site, strlen(site));
-	SHA256_Final(salt, &sha256_ctx);
+	SHA256_Update(&sha256_ctx, (void*) s, strlen(s));
+	SHA256_Final(hash, &sha256_ctx);
+}
+
+static int
+getsalt(uint8_t salt[32], void* site)
+{
+	sha256string(salt, site);
+	char buf[65];
+	bintohex(buf, 32, salt);
+	printf("Site hex: %s\n", buf);
 	return (0);
 }
 

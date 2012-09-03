@@ -94,6 +94,11 @@ main(int argc, char *argv[])
 		    dec ? NULL : "Please confirm passphrase", 1))
 			exit(1);
 	}
+	uint8_t passhash[32];
+	sha256string(passhash, passwd);
+	char buf1[65];
+	bintohex(buf1, 32, passhash);
+	printf("Master hex: %s\n", buf1);
 
 	uint8_t dk[64];
 	rc = genpass(dk, (uint8_t *)passwd, strlen(passwd), (void*) *argv,
@@ -103,11 +108,9 @@ main(int argc, char *argv[])
 	memset(passwd, 0, strlen(passwd));
 	free(passwd);
 
-	char buf[65];
-	for (i = 0; i < 64; i++) {
-		sprintf(buf + i, "%x", dk[i]);
-	}
-	printf("Result: %s\n", buf);
+	char buf[129];
+	bintohex(buf, 64, dk);
+	printf("Hex passkey: %s\n", buf);
 
 	/* If we failed, print the right error message and exit. */
 	if (rc != 0) {
