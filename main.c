@@ -59,7 +59,7 @@ main(int argc, char *argv[])
 	int i;
 
 #ifdef NEED_WARN_PROGNAME
-	warn_progname = "scrypt";
+	warn_progname = "scrypt-genpass";
 #endif
 
 	if (argc < 1)
