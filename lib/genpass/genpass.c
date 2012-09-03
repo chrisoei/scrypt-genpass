@@ -38,7 +38,6 @@
 #include <openssl/aes.h>
 
 #include "crypto_scrypt.h"
-#include "memlimit.h"
 #include "sha256.h"
 #include "sysendian.h"
 
@@ -46,13 +45,13 @@
 
 #define ENCBLOCK 65536
 
-static int pickparams(size_t, double, int,
+static int pickparams(size_t, int,
     int *, uint32_t *, uint32_t *);
-static int checkparams(size_t, double, double, int, uint32_t, uint32_t);
+static int checkparams(size_t, int, int, uint32_t, uint32_t);
 static int getsalt(uint8_t[32]);
 
 static int
-pickparams(size_t maxmem, double maxmemfrac, int megaops,
+pickparams(size_t maxmem, int megaops,
     int * logN, uint32_t * r, uint32_t * p)
 {
 	size_t memlimit;
@@ -62,8 +61,7 @@ pickparams(size_t maxmem, double maxmemfrac, int megaops,
 	int rc;
 
 	/* Figure out how much memory to use. */
-	if (memtouse(maxmem, maxmemfrac, &memlimit))
-		return (1);
+	memlimit = maxmem * 1000000;
 
 	opslimit = 1000000 * megaops;
 
@@ -112,7 +110,7 @@ pickparams(size_t maxmem, double maxmemfrac, int megaops,
 }
 
 static int
-checkparams(size_t maxmem, double maxmemfrac, double maxtime,
+checkparams(size_t maxmem, int megaops,
     int logN, uint32_t r, uint32_t p)
 {
 	size_t memlimit;
@@ -122,13 +120,9 @@ checkparams(size_t maxmem, double maxmemfrac, double maxtime,
 	int rc;
 
 	/* Figure out the maximum amount of memory we can use. */
-	if (memtouse(maxmem, maxmemfrac, &memlimit))
-		return (1);
+	memlimit = 1000000 * maxmem;
 
-	/* Figure out how fast the CPU is. */
-	if ((rc = scryptenc_cpuperf(&opps)) != 0)
-		return (rc);
-	opslimit = opps * maxtime;
+	opslimit = 1000000 * megaops;
 
 	/* Sanity-check values. */
 	if ((logN < 1) || (logN > 63))
@@ -192,7 +186,7 @@ err0:
 int
 genpass(uint8_t dk[64],
     const uint8_t * passwd, size_t passwdlen,
-    size_t maxmem, double maxmemfrac, int megaops)
+    size_t maxmem, int megaops)
 {
 	uint8_t salt[32];
 	uint8_t hbuf[32];
@@ -206,7 +200,7 @@ genpass(uint8_t dk[64],
 	int rc;
 
 	/* Pick values for N, r, p. */
-	if ((rc = pickparams(maxmem, maxmemfrac, megaops,
+	if ((rc = pickparams(maxmem, megaops,
 	    &logN, &r, &p)) != 0)
 		return (rc);
 	N = (uint64_t)(1) << logN;

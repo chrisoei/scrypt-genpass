@@ -51,8 +51,7 @@ main(int argc, char *argv[])
 	FILE * infile = NULL;
 	FILE * outfile = stdout;
 	int dec = 0;
-	size_t maxmem = 0;
-	double maxmemfrac = 0.5;
+	size_t maxmem = 1000;
 	int megaops = 5;
 	char ch;
 	char * passwd;
@@ -65,17 +64,12 @@ main(int argc, char *argv[])
 
 	if (argc < 1)
 		usage();
-	maxmem = 0;
-	maxmemfrac = 0.125;
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "hm:M:o:")) != -1) {
+	while ((ch = getopt(argc, argv, "hm:o:")) != -1) {
 		switch (ch) {
-		case 'M':
-			maxmem = strtoumax(optarg, NULL, 0);
-			break;
 		case 'm':
-			maxmemfrac = strtod(optarg, NULL);
+			maxmem = strtoumax(optarg, NULL, 0);
 			break;
 		case 'o':
 			megaops = atoi(optarg);
@@ -98,7 +92,7 @@ main(int argc, char *argv[])
 
 	uint8_t dk[64];
 	rc = genpass(dk, (uint8_t *)passwd,
-	    strlen(passwd), maxmem, maxmemfrac, megaops);
+	    strlen(passwd), maxmem, megaops);
 
 	/* Zero and free the password. */
 	memset(passwd, 0, strlen(passwd));
