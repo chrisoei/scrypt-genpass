@@ -40,11 +40,10 @@
 #include "crypto_aesctr.h"
 #include "crypto_scrypt.h"
 #include "memlimit.h"
-#include "scryptenc_cpuperf.h"
 #include "sha256.h"
 #include "sysendian.h"
 
-#include "scryptenc.h"
+#include "genpass.h"
 
 #define ENCBLOCK 65536
 
@@ -67,9 +66,8 @@ pickparams(size_t maxmem, double maxmemfrac, double maxtime,
 	if (memtouse(maxmem, maxmemfrac, &memlimit))
 		return (1);
 
-	/* Figure out how fast the CPU is. */
-	if ((rc = scryptenc_cpuperf(&opps)) != 0)
-		return (rc);
+	opps = 1; /* FIXIT: don't attempt to calculate CPU speed since
+	we want the same result on any computer. */
 	opslimit = opps * maxtime;
 
 	/* Allow a minimum of 2^15 salsa20/8 cores. */
@@ -198,7 +196,7 @@ err0:
 	return (4);
 }
 
-static int
+int
 genpass(uint8_t dk[64],
     const uint8_t * passwd, size_t passwdlen,
     size_t maxmem, double maxmemfrac, double maxtime)

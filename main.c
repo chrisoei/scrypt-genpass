@@ -33,7 +33,7 @@
 #include <unistd.h>
 
 #include "readpass.h"
-#include "scryptenc.h"
+#include "genpass.h"
 #include "warn.h"
 
 static void
@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass <master-password> <site>\n");
+	    "usage: scrypt-genpass <site>\n");
 	exit(1);
 }
 
@@ -62,19 +62,11 @@ main(int argc, char *argv[])
 	warn_progname = "scrypt";
 #endif
 
-	/* We should have "enc" or "dec" first. */
-	if (argc < 2)
+	if (argc < 1)
 		usage();
-	if (strcmp(argv[1], "enc") == 0) {
-		maxmem = 0;
-		maxmemfrac = 0.125;
-		maxtime = 5.0;
-	} else if (strcmp(argv[1], "dec") == 0) {
-		dec = 1;
-	} else
-		usage();
-	argc--;
-	argv++;
+	maxmem = 0;
+	maxmemfrac = 0.125;
+	maxtime = 5.0;
 
 	/* Parse arguments. */
 	while ((ch = getopt(argc, argv, "hm:M:t:")) != -1) {
@@ -95,36 +87,18 @@ main(int argc, char *argv[])
 	argc -= optind;
 	argv += optind;
 
-	/* We must have one or two parameters left. */
-	if ((argc < 1) || (argc > 2))
+	/* We must have one parameters left. */
+	if (argc != 1)
 		usage();
-
-	/* Open the input file. */
-	if ((infile = fopen(argv[0], "r")) == NULL) {
-		warn("Cannot open input file: %s", argv[0]);
-		exit(1);
-	}
-
-	/* If we have an output file, open it. */
-	if (argc > 1) {
-		if ((outfile = fopen(argv[1], "w")) == NULL) {
-			warn("Cannot open output file: %s", argv[1]);
-			exit(1);
-		}
-	}
 
 	/* Prompt for a password. */
 	if (tarsnap_readpass(&passwd, "Please enter passphrase",
 	    dec ? NULL : "Please confirm passphrase", 1))
 		exit(1);
 
-	/* Encrypt or decrypt. */
-	if (dec)
-		rc = scryptdec_file(infile, outfile, (uint8_t *)passwd,
-		    strlen(passwd), maxmem, maxmemfrac, maxtime);
-	else
-		rc = scryptenc_file(infile, outfile, (uint8_t *)passwd,
-		    strlen(passwd), maxmem, maxmemfrac, maxtime);
+	uint8_t dk[64];
+	rc = genpass(dk, (uint8_t *)passwd,
+	    strlen(passwd), maxmem, maxmemfrac, maxtime);
 
 	/* Zero and free the password. */
 	memset(passwd, 0, strlen(passwd));
