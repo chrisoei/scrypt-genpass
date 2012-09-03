@@ -52,7 +52,7 @@ main(int argc, char *argv[])
 	FILE * outfile = stdout;
 	int dec = 0;
 	uint32_t maxmem = 1000;
-	uint32_t megaops = 5;
+	uint32_t megaops = 32;
 	char ch;
 	char * passwd;
 	int rc;
