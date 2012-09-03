@@ -47,13 +47,13 @@
 
 #define ENCBLOCK 65536
 
-static int pickparams(size_t, double, double,
+static int pickparams(size_t, double, int,
     int *, uint32_t *, uint32_t *);
 static int checkparams(size_t, double, double, int, uint32_t, uint32_t);
 static int getsalt(uint8_t[32]);
 
 static int
-pickparams(size_t maxmem, double maxmemfrac, double maxtime,
+pickparams(size_t maxmem, double maxmemfrac, int megaops,
     int * logN, uint32_t * r, uint32_t * p)
 {
 	size_t memlimit;
@@ -66,13 +66,7 @@ pickparams(size_t maxmem, double maxmemfrac, double maxtime,
 	if (memtouse(maxmem, maxmemfrac, &memlimit))
 		return (1);
 
-	opps = 1; /* FIXIT: don't attempt to calculate CPU speed since
-	we want the same result on any computer. */
-	opslimit = opps * maxtime;
-
-	/* Allow a minimum of 2^15 salsa20/8 cores. */
-	if (opslimit < 32768)
-		opslimit = 32768;
+	opslimit = 1000000 * megaops;
 
 	/* Fix r = 8 for now. */
 	*r = 8;
@@ -199,7 +193,7 @@ err0:
 int
 genpass(uint8_t dk[64],
     const uint8_t * passwd, size_t passwdlen,
-    size_t maxmem, double maxmemfrac, double maxtime)
+    size_t maxmem, double maxmemfrac, int megaops)
 {
 	uint8_t salt[32];
 	uint8_t hbuf[32];
@@ -213,7 +207,7 @@ genpass(uint8_t dk[64],
 	int rc;
 
 	/* Pick values for N, r, p. */
-	if ((rc = pickparams(maxmem, maxmemfrac, maxtime,
+	if ((rc = pickparams(maxmem, maxmemfrac, megaops,
 	    &logN, &r, &p)) != 0)
 		return (rc);
 	N = (uint64_t)(1) << logN;
