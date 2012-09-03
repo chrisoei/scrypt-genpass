@@ -45,20 +45,28 @@ usage(void)
 	exit(1);
 }
 
+void unit_tests()
+{
+	printf("sizeof(void*) = %lu\n", sizeof(void*));
+	printf("sizeof(char*) = %lu\n", sizeof(char*));
+	printf("sizeof(uint8_t*) = %lu\n", sizeof(uint8_t*));
+
+	printf("sizeof(char) = %lu\n", sizeof(char));
+}
+
 int
 main(int argc, char *argv[])
 {
 	FILE * infile = NULL;
 	FILE * outfile = stdout;
 	int dec = 0;
-	int passwdlen = 0;
+	size_t passwdlen = 0;
 	uint32_t maxmem = 1000;
 	uint32_t megaops = 32;
 	char ch;
 	char * keyfile = NULL;
-	char * passwd = NULL;
+	uint8_t* passwd = NULL;
 	int rc;
-	int i;
 
 #ifdef NEED_WARN_PROGNAME
 	warn_progname = "scrypt-genpass";
@@ -68,7 +76,7 @@ main(int argc, char *argv[])
 		usage();
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "hk:m:o:p:")) != -1) {
+	while ((ch = getopt(argc, argv, "htk:m:o:p:")) != -1) {
 		switch (ch) {
 		case 'k':
 			keyfile = strdup(optarg);
@@ -81,6 +89,9 @@ main(int argc, char *argv[])
 			break;
 		case 'p':
 			passwd = strdup(optarg);
+			break;
+		case 't':
+			unit_tests();
 			break;
 		default:
 			usage();
@@ -110,19 +121,16 @@ main(int argc, char *argv[])
 			fseek(fp, 0, SEEK_END);
 			keyfilelen = ftell(fp);
 			fseek(fp, 0, SEEK_SET);
-			printf("DEBUG: keyfilelen = %d\n", keyfilelen);
 			uint8_t* combinedkey = malloc(passwdlen + keyfilelen + 1);
 			if (combinedkey) {
 				strcpy(combinedkey, passwd);
 				memset(passwd, 0, passwdlen);
 				free(passwd);
-				int n  = fread(combinedkey + passwdlen, keyfilelen, 1, fp);
-				/* n == number of items read == 1 */
+				size_t n  = fread(combinedkey + passwdlen, keyfilelen, 1, fp);
+				/* TODO: check n == number of items read == 1 */
 				fclose(fp);
-				printf("DEBUG: n = %d\n", n);
 				passwd = combinedkey;
 				passwdlen += keyfilelen;
-				printf("DEBUG: combinedkey = %s\n", passwd);
 			} else {
 				rc = 15;
 			}

@@ -49,7 +49,7 @@
 static int pickparams(uint32_t, uint32_t,
     int *, uint32_t *, uint32_t *);
 static int checkparams(uint32_t, uint32_t, int, uint32_t, uint32_t);
-static int getsalt(uint8_t[32], void* site);
+static int getsalt(uint8_t[32], char* site);
 
 static int
 pickparams(uint32_t maxmem, uint32_t megaops,
@@ -161,9 +161,9 @@ sha256string(uint8_t hash[32], uint8_t* s, int n)
 }
 
 static int
-getsalt(uint8_t salt[32], void* site)
+getsalt(uint8_t salt[32], char* site)
 {
-	sha256string(salt, site, strlen(site));
+	sha256string(salt, (uint8_t*) site, strlen(site));
 	char buf[65];
 	bintohex(buf, 32, salt);
 	printf("Site hex: %s\n", buf);
@@ -172,7 +172,7 @@ getsalt(uint8_t salt[32], void* site)
 
 int
 genpass(uint8_t dk[64],
-    const uint8_t * passwd, size_t passwdlen, void* site,
+    const uint8_t * passwd, size_t passwdlen, char* site,
     uint32_t maxmem, uint32_t megaops)
 {
 	uint8_t salt[32];

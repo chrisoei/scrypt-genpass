@@ -76,7 +76,7 @@ int bintohex(char* outstring, size_t nbytes, uint8_t* data);
 int sha256string(uint8_t* hash, uint8_t* s, int n);
 
 int genpass(uint8_t dk[64],
-    const uint8_t * passwd, size_t passwdlen, void* site,
+    const uint8_t * passwd, size_t passwdlen, char* site,
     uint32_t maxmem, uint32_t megaops);
 
 #endif /* !_GENPASS_H_ */
