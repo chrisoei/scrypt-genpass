@@ -37,7 +37,6 @@
 
 #include <openssl/aes.h>
 
-#include "crypto_aesctr.h"
 #include "crypto_scrypt.h"
 #include "memlimit.h"
 #include "sha256.h"

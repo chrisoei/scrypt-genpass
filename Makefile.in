@@ -52,7 +52,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_scrypt_OBJECTS = scrypt-main.$(OBJEXT) scrypt-memlimit.$(OBJEXT) \
 	scrypt-readpass.$(OBJEXT) scrypt-warn.$(OBJEXT) \
 	scrypt-genpass.$(OBJEXT) \
-	scrypt-crypto_aesctr.$(OBJEXT) scrypt-sha256.$(OBJEXT) \
+	scrypt-sha256.$(OBJEXT) \
 	scrypt-crypto_scrypt-@SCRYPTVER@.$(OBJEXT)
 scrypt_OBJECTS = $(am_scrypt_OBJECTS)
 scrypt_DEPENDENCIES =
@@ -178,7 +178,6 @@ scrypt_SOURCES = main.c				\
 			lib/util/readpass.c		\
 			lib/util/warn.c			\
 			lib/genpass/genpass.c	\
-			lib/crypto/crypto_aesctr.c	\
 			lib/crypto/sha256.c		\
 			lib/crypto/crypto_scrypt-@SCRYPTVER@.c
 
@@ -273,7 +272,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-crypto_aesctr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-crypto_scrypt-@SCRYPTVER@.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-memlimit.Po@am__quote@
@@ -365,20 +363,6 @@ scrypt-genpass.obj: lib/genpass/genpass.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/genpass/genpass.c' object='scrypt-genpass.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-genpass.obj `if test -f 'lib/genpass/genpass.c'; then $(CYGPATH_W) 'lib/genpass/genpass.c'; else $(CYGPATH_W) '$(srcdir)/lib/genpass/genpass.c'; fi`
-
-scrypt-crypto_aesctr.o: lib/crypto/crypto_aesctr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-crypto_aesctr.o -MD -MP -MF $(DEPDIR)/scrypt-crypto_aesctr.Tpo -c -o scrypt-crypto_aesctr.o `test -f 'lib/crypto/crypto_aesctr.c' || echo '$(srcdir)/'`lib/crypto/crypto_aesctr.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/scrypt-crypto_aesctr.Tpo $(DEPDIR)/scrypt-crypto_aesctr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/crypto/crypto_aesctr.c' object='scrypt-crypto_aesctr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-crypto_aesctr.o `test -f 'lib/crypto/crypto_aesctr.c' || echo '$(srcdir)/'`lib/crypto/crypto_aesctr.c
-
-scrypt-crypto_aesctr.obj: lib/crypto/crypto_aesctr.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-crypto_aesctr.obj -MD -MP -MF $(DEPDIR)/scrypt-crypto_aesctr.Tpo -c -o scrypt-crypto_aesctr.obj `if test -f 'lib/crypto/crypto_aesctr.c'; then $(CYGPATH_W) 'lib/crypto/crypto_aesctr.c'; else $(CYGPATH_W) '$(srcdir)/lib/crypto/crypto_aesctr.c'; fi`
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/scrypt-crypto_aesctr.Tpo $(DEPDIR)/scrypt-crypto_aesctr.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/crypto/crypto_aesctr.c' object='scrypt-crypto_aesctr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-crypto_aesctr.obj `if test -f 'lib/crypto/crypto_aesctr.c'; then $(CYGPATH_W) 'lib/crypto/crypto_aesctr.c'; else $(CYGPATH_W) '$(srcdir)/lib/crypto/crypto_aesctr.c'; fi`
 
 scrypt-sha256.o: lib/crypto/sha256.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-sha256.o -MD -MP -MF $(DEPDIR)/scrypt-sha256.Tpo -c -o scrypt-sha256.o `test -f 'lib/crypto/sha256.c' || echo '$(srcdir)/'`lib/crypto/sha256.c
