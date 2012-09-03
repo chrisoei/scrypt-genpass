@@ -51,6 +51,7 @@ binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_scrypt_OBJECTS = scrypt-main.$(OBJEXT) \
 	scrypt-readpass.$(OBJEXT) scrypt-warn.$(OBJEXT) \
+	scrypt-hashtopass.$(OBJEXT) \
 	scrypt-genpass.$(OBJEXT) \
 	scrypt-sha256.$(OBJEXT) \
 	scrypt-crypto_scrypt-@SCRYPTVER@.$(OBJEXT)
@@ -175,6 +176,7 @@ AUTOMAKE_OPTIONS = foreign
 dist_man_MANS = $(scrypt_man_MANS)
 scrypt_SOURCES = main.c				\
 			lib/util/readpass.c		\
+			lib/util/hashtopass.c \
 			lib/util/warn.c			\
 			lib/genpass/genpass.c	\
 			lib/crypto/sha256.c		\
@@ -274,6 +276,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-crypto_scrypt-@SCRYPTVER@.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-readpass.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-hashtopass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-genpass.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-sha256.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-warn.Po@am__quote@
@@ -319,6 +322,21 @@ scrypt-readpass.obj: lib/util/readpass.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/util/readpass.c' object='scrypt-readpass.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-readpass.obj `if test -f 'lib/util/readpass.c'; then $(CYGPATH_W) 'lib/util/readpass.c'; else $(CYGPATH_W) '$(srcdir)/lib/util/readpass.c'; fi`
+scrypt-readpass.o: lib/util/readpass.c
+
+scrypt-hashtopass.o: lib/util/hashtopass.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-hashtopass.o -MD -MP -MF $(DEPDIR)/scrypt-hashtopass.Tpo -c -o scrypt-hashtopass.o `test -f 'lib/util/hashtopass.c' || echo '$(srcdir)/'`lib/util/hashtopass.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/scrypt-hashtopass.Tpo $(DEPDIR)/scrypt-hashtopass.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/util/hashtopass.c' object='scrypt-hashtopass.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-hashtopass.o `test -f 'lib/util/hashtopass.c' || echo '$(srcdir)/'`lib/util/hashtopass.c
+
+scrypt-hashtopass.obj: lib/util/hashtopass.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-hashtopass.obj -MD -MP -MF $(DEPDIR)/scrypt-hashtopass.Tpo -c -o scrypt-hashtopass.obj `if test -f 'lib/util/hashtopass.c'; then $(CYGPATH_W) 'lib/util/hashtopass.c'; else $(CYGPATH_W) '$(srcdir)/lib/util/hashtopass.c'; fi`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/scrypt-hashtopass.Tpo $(DEPDIR)/scrypt-hashtopass.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='lib/util/hashtopass.c' object='scrypt-hashtopass.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -c -o scrypt-hashtopass.obj `if test -f 'lib/util/hashtopass.c'; then $(CYGPATH_W) 'lib/util/hashtopass.c'; else $(CYGPATH_W) '$(srcdir)/lib/util/hashtopass.c'; fi`
 
 scrypt-warn.o: lib/util/warn.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(scrypt_CFLAGS) $(CFLAGS) -MT scrypt-warn.o -MD -MP -MF $(DEPDIR)/scrypt-warn.Tpo -c -o scrypt-warn.o `test -f 'lib/util/warn.c' || echo '$(srcdir)/'`lib/util/warn.c

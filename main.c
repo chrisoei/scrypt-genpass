@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
+	    "usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
 	fprintf(stderr,
 			"       scrypt-genpass -t\n");
 	exit(1);
@@ -75,6 +75,7 @@ main(int argc, char *argv[])
 	FILE * outfile = stdout;
 	int dec = 0;
 	size_t passwdlen = 0;
+	size_t outputlength = 12;
 	uint32_t maxmem = 1000;
 	uint32_t megaops = 32;
 	char ch;
@@ -90,11 +91,13 @@ main(int argc, char *argv[])
 		usage();
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "htk:m:o:p:")) != -1) {
+	while ((ch = getopt(argc, argv, "htk:l:m:o:p:")) != -1) {
 		switch (ch) {
 		case 'k':
 			keyfile = strdup(optarg);
 			break;
+		case 'l':
+			outputlength = atoi(optarg);
 		case 'm':
 			maxmem = atoi(optarg);
 			break;
@@ -176,6 +179,15 @@ main(int argc, char *argv[])
 	char buf[129];
 	bintohex(buf, 64, dk);
 	printf("Pass hex: %s\n", buf);
+
+	if ((outputlength < 3)||(outputlength > 64)) {
+		warn("Unable to generate password for output length %lu", outputlength);
+		exit(1);
+	}
+
+	char output[outputlength + 1];
+	hashtopass(output, outputlength, dk);
+	printf("Generated password: %s\n", output);
 
 	/* If we failed, print the right error message and exit. */
 	if (rc != 0) {
