@@ -42,6 +42,8 @@ usage(void)
 
 	fprintf(stderr,
 	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
+	fprintf(stderr,
+			"       scrypt-genpass -t\n");
 	exit(1);
 }
 

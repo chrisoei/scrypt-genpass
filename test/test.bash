@@ -1,5 +1,11 @@
 #!/bin/bash
 
 PROG=./scrypt-genpass
+RESULTS=test/test_results.log
 
-$PROG -t
+$PROG -t > $RESULTS 2>&1
+$PROG -h >> $RESULTS 2>&1
+$PROG -p b a >> $RESULTS 2>&1
+$PROG -k test/keyfile1.dat -p abc ghi >> $RESULTS 2>&1
+
+diff $RESULTS test/test_results.reference
