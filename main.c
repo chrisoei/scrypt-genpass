@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] <site>\n");
+	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] [-p PASS] <site>\n");
 	exit(1);
 }
 
@@ -54,7 +54,7 @@ main(int argc, char *argv[])
 	uint32_t maxmem = 1000;
 	uint32_t megaops = 32;
 	char ch;
-	char * passwd;
+	char * passwd = NULL;
 	int rc;
 	int i;
 
@@ -66,13 +66,16 @@ main(int argc, char *argv[])
 		usage();
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "hm:o:")) != -1) {
+	while ((ch = getopt(argc, argv, "hm:o:p:")) != -1) {
 		switch (ch) {
 		case 'm':
 			maxmem = atoi(optarg);
 			break;
 		case 'o':
 			megaops = atoi(optarg);
+			break;
+		case 'p':
+			passwd = strdup(optarg);
 			break;
 		default:
 			usage();
@@ -85,10 +88,12 @@ main(int argc, char *argv[])
 	if (argc != 1)
 		usage();
 
-	/* Prompt for a password. */
-	if (tarsnap_readpass(&passwd, "Please enter passphrase",
-	    dec ? NULL : "Please confirm passphrase", 1))
-		exit(1);
+	if (!passwd) {
+		/* Prompt for a password. */
+		if (tarsnap_readpass(&passwd, "Please enter passphrase",
+		    dec ? NULL : "Please confirm passphrase", 1))
+			exit(1);
+	}
 
 	uint8_t dk[64];
 	rc = genpass(dk, (uint8_t *)passwd, strlen(passwd), (void*) *argv,
@@ -98,7 +103,7 @@ main(int argc, char *argv[])
 	memset(passwd, 0, strlen(passwd));
 	free(passwd);
 
-	char* buf = malloc(65);
+	char buf[65];
 	for (i = 0; i < 64; i++) {
 		sprintf(buf + i, "%x", dk[i]);
 	}
