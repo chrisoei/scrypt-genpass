@@ -144,43 +144,19 @@ checkparams(uint32_t maxmem, uint32_t megaops,
 static int
 getsalt(uint8_t salt[32])
 {
-	int fd;
-	ssize_t lenread;
-	uint8_t * buf = salt;
-	size_t buflen = 32;
+	uint8_t randomdata[32] = {
+		0x67, 0x18, 0x53, 0x16 , 0xdc, 0x1e, 0x95, 0xd2,
+		0x78, 0x49, 0xc3, 0x99, 0xe6, 0x6f, 0x07, 0xc1,
+		0xa7, 0x0d, 0x02, 0x07, 0x0f, 0x24, 0xbb, 0xfa,
+		0xf5, 0xb5, 0x42, 0x72, 0x94, 0x9b, 0x35, 0xa6
+	};
+	int i;
 
-	/* Open /dev/urandom. */
-	if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
-		goto err0;
-
-	/* Read bytes until we have filled the buffer. */
-	while (buflen > 0) {
-		if ((lenread = read(fd, buf, buflen)) == -1)
-			goto err1;
-
-		/* The random device should never EOF. */
-		if (lenread == 0)
-			goto err1;
-
-		/* We're partly done. */
-		buf += lenread;
-		buflen -= lenread;
-	}
-
-	/* Close the device. */
-	while (close(fd) == -1) {
-		if (errno != EINTR)
-			goto err0;
-	}
+	for (i = 0; i < 32; i++)
+		salt[i] = randomdata[i];
 
 	/* Success! */
 	return (0);
-
-err1:
-	close(fd);
-err0:
-	/* Failure! */
-	return (4);
 }
 
 int
