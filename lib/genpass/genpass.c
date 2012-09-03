@@ -44,6 +44,7 @@
 #include "genpass.h"
 
 #define ENCBLOCK 65536
+#define MEGA (1024*1024)
 
 static int pickparams(uint32_t, uint32_t,
     int *, uint32_t *, uint32_t *);
@@ -61,9 +62,8 @@ pickparams(uint32_t maxmem, uint32_t megaops,
 	int rc;
 
 	/* Figure out how much memory to use. */
-	memlimit = maxmem * 1000000;
-
-	opslimit = 1000000 * megaops;
+	memlimit = MEGA * maxmem;
+	opslimit = MEGA * megaops;
 
 	/* Fix r = 8 for now. */
 	*r = 8;
