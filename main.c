@@ -157,7 +157,7 @@ main(int argc, char *argv[])
 
 	char buf[129];
 	bintohex(buf, 64, dk);
-	printf("Hex passkey: %s\n", buf);
+	printf("Pass hex: %s\n", buf);
 
 	/* If we failed, print the right error message and exit. */
 	if (rc != 0) {
