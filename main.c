@@ -72,6 +72,7 @@ main(int argc, char *argv[])
 		switch (ch) {
 		case 'k':
 			keyfile = strdup(optarg);
+			break;
 		case 'm':
 			maxmem = atoi(optarg);
 			break;
