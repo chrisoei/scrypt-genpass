@@ -47,11 +47,12 @@ usage(void)
 
 void unit_tests()
 {
-	printf("sizeof(void*) = %lu\n", sizeof(void*));
-	printf("sizeof(char*) = %lu\n", sizeof(char*));
-	printf("sizeof(uint8_t*) = %lu\n", sizeof(uint8_t*));
-
-	printf("sizeof(char) = %lu\n", sizeof(char));
+	if (sizeof(char)!=1) {
+		fprintf(stderr, "sizeof(char) != 1\n");
+		exit(1);
+	}
+	fprintf(stderr, "All tests pass\n");
+	exit(0);
 }
 
 int
