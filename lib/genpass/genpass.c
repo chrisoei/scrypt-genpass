@@ -49,7 +49,7 @@
 static int pickparams(uint32_t, uint32_t,
     int *, uint32_t *, uint32_t *);
 static int checkparams(uint32_t, uint32_t, int, uint32_t, uint32_t);
-static int getsalt(uint8_t[32]);
+static int getsalt(uint8_t[32], void* site);
 
 static int
 pickparams(uint32_t maxmem, uint32_t megaops,
@@ -142,26 +142,18 @@ checkparams(uint32_t maxmem, uint32_t megaops,
 }
 
 static int
-getsalt(uint8_t salt[32])
+getsalt(uint8_t salt[32], void* site)
 {
-	uint8_t randomdata[32] = {
-		0x67, 0x18, 0x53, 0x16 , 0xdc, 0x1e, 0x95, 0xd2,
-		0x78, 0x49, 0xc3, 0x99, 0xe6, 0x6f, 0x07, 0xc1,
-		0xa7, 0x0d, 0x02, 0x07, 0x0f, 0x24, 0xbb, 0xfa,
-		0xf5, 0xb5, 0x42, 0x72, 0x94, 0x9b, 0x35, 0xa6
-	};
-	int i;
-
-	for (i = 0; i < 32; i++)
-		salt[i] = randomdata[i];
-
-	/* Success! */
+	SHA256_CTX sha256_ctx;
+	SHA256_Init(&sha256_ctx);
+	SHA256_Update(&sha256_ctx, site, strlen(site));
+	SHA256_Final(salt, &sha256_ctx);
 	return (0);
 }
 
 int
 genpass(uint8_t dk[64],
-    const uint8_t * passwd, size_t passwdlen,
+    const uint8_t * passwd, size_t passwdlen, void* site,
     uint32_t maxmem, uint32_t megaops)
 {
 	uint8_t salt[32];
@@ -181,8 +173,8 @@ genpass(uint8_t dk[64],
 		return (rc);
 	N = (uint64_t)(1) << logN;
 
-	/* Get some salt. */
-	if ((rc = getsalt(salt)) != 0)
+	/* Get some salt using the site. */
+	if ((rc = getsalt(salt, site)) != 0)
 		return (rc);
 
 	/* Generate the derived keys. */

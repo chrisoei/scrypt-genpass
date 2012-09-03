@@ -91,8 +91,8 @@ main(int argc, char *argv[])
 		exit(1);
 
 	uint8_t dk[64];
-	rc = genpass(dk, (uint8_t *)passwd,
-	    strlen(passwd), maxmem, megaops);
+	rc = genpass(dk, (uint8_t *)passwd, strlen(passwd), (void*) *argv,
+		maxmem, megaops);
 
 	/* Zero and free the password. */
 	memset(passwd, 0, strlen(passwd));

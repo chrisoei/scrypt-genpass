@@ -73,7 +73,7 @@
  */
 
 int genpass(uint8_t dk[64],
-    const uint8_t * passwd, size_t passwdlen,
+    const uint8_t * passwd, size_t passwdlen, void* site,
     uint32_t maxmem, uint32_t megaops);
 
 #endif /* !_GENPASS_H_ */
