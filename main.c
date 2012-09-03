@@ -51,7 +51,18 @@ void unit_tests()
 		fprintf(stderr, "sizeof(char) != 1\n");
 		exit(1);
 	}
-	fprintf(stderr, "All tests pass\n");
+
+	uint8_t testhash[32];
+	sha256string(testhash, (uint8_t*) "abc", 3);
+	char testbuf[65];
+	bintohex(testbuf, 32, testhash);
+	if (strcmp(testbuf, 
+			"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")) {
+		fprintf(stderr, "SHA256 test failed\n");
+		exit(1);
+	}
+
+	fprintf(stderr, "All internal tests pass\n");
 	exit(0);
 }
 
