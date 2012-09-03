@@ -152,18 +152,18 @@ bintohex(char* outstring, size_t nbytes, uint8_t* data)
 }
 
 int
-sha256string(uint8_t hash[32], char* s)
+sha256string(uint8_t hash[32], uint8_t* s, int n)
 {
 	SHA256_CTX sha256_ctx;
 	SHA256_Init(&sha256_ctx);
-	SHA256_Update(&sha256_ctx, (void*) s, strlen(s));
+	SHA256_Update(&sha256_ctx, (void*) s, n);
 	SHA256_Final(hash, &sha256_ctx);
 }
 
 static int
 getsalt(uint8_t salt[32], void* site)
 {
-	sha256string(salt, site);
+	sha256string(salt, site, strlen(site));
 	char buf[65];
 	bintohex(buf, 32, salt);
 	printf("Site hex: %s\n", buf);

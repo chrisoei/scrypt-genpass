@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] [-p PASS] <site>\n");
+	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
 	exit(1);
 }
 
@@ -51,9 +51,11 @@ main(int argc, char *argv[])
 	FILE * infile = NULL;
 	FILE * outfile = stdout;
 	int dec = 0;
+	int passwdlen = 0;
 	uint32_t maxmem = 1000;
 	uint32_t megaops = 32;
 	char ch;
+	char * keyfile = NULL;
 	char * passwd = NULL;
 	int rc;
 	int i;
@@ -66,8 +68,10 @@ main(int argc, char *argv[])
 		usage();
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "hm:o:p:")) != -1) {
+	while ((ch = getopt(argc, argv, "hk:m:o:p:")) != -1) {
 		switch (ch) {
+		case 'k':
+			keyfile = strdup(optarg);
 		case 'm':
 			maxmem = atoi(optarg);
 			break;
@@ -94,19 +98,52 @@ main(int argc, char *argv[])
 		    dec ? NULL : "Please confirm passphrase", 1))
 			exit(1);
 	}
+	passwdlen = strlen(passwd);
+
+	if (keyfile) {
+		FILE *fp;
+		size_t keyfilelen;
+
+		fp = fopen(keyfile, "rb");
+		if (fp) {
+			fseek(fp, 0, SEEK_END);
+			keyfilelen = ftell(fp);
+			fseek(fp, 0, SEEK_SET);
+			printf("DEBUG: keyfilelen = %d\n", keyfilelen);
+			uint8_t* combinedkey = malloc(passwdlen + keyfilelen + 1);
+			if (combinedkey) {
+				strcpy(combinedkey, passwd);
+				memset(passwd, 0, passwdlen);
+				free(passwd);
+				int n  = fread(combinedkey + passwdlen, keyfilelen, 1, fp);
+				/* n == number of items read == 1 */
+				fclose(fp);
+				printf("DEBUG: n = %d\n", n);
+				passwd = combinedkey;
+				passwdlen += keyfilelen;
+				printf("DEBUG: combinedkey = %s\n", passwd);
+			} else {
+				rc = 15;
+			}
+		}	else {
+			rc = 14;
+		}
+	}
+
 	uint8_t passhash[32];
-	sha256string(passhash, passwd);
+	sha256string(passhash, passwd, passwdlen);
 	char buf1[65];
 	bintohex(buf1, 32, passhash);
 	printf("Master hex: %s\n", buf1);
 
 	uint8_t dk[64];
-	rc = genpass(dk, (uint8_t *)passwd, strlen(passwd), (void*) *argv,
+	rc = genpass(dk, (uint8_t *)passwd, passwdlen, (void*) *argv,
 		maxmem, megaops);
 
 	/* Zero and free the password. */
-	memset(passwd, 0, strlen(passwd));
+	memset(passwd, 0, passwdlen);
 	free(passwd);
+	free(keyfile);
 
 	char buf[129];
 	bintohex(buf, 64, dk);
@@ -154,6 +191,12 @@ main(int argc, char *argv[])
 			break;
 		case 13:
 			warn("Error reading file: %s", argv[0]);
+			break;
+		case 14:
+			warn("Unable to open keyfile: %s", keyfile);
+			break;
+		case 15:
+			warn("Unable to allocate memory for combined key");
 			break;
 		}
 		exit(1);
