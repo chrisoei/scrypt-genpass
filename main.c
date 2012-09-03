@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass <site>\n");
+	    "usage: scrypt-genpass [-m MAXMEM] [-o MAXOPS] <site>\n");
 	exit(1);
 }
 
