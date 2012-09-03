@@ -11,6 +11,10 @@ attack many orders of magnitude more difficult.
 
 This project uses Colin Percival's scrypt as a password generator.
 
+For documentation on how to use it, see
+
+  https://github.com/chrisoei/scrypt-genpass/wiki
+
 For more details of how scrypt works, see
 
   http://www.tarsnap.com/scrypt.html
