@@ -128,15 +128,20 @@ main(int argc, char *argv[])
 				memset(passwd, 0, passwdlen);
 				free(passwd);
 				size_t n  = fread(combinedkey + passwdlen, keyfilelen, 1, fp);
-				/* TODO: check n == number of items read == 1 */
 				fclose(fp);
+				if (n != 1) {
+					warn("Unable to read keyfile");
+					exit(1);
+				}
 				passwd = combinedkey;
 				passwdlen += keyfilelen;
 			} else {
-				rc = 15;
+				warn("Unable to allocate memory for combined key");
+				exit(1);
 			}
 		}	else {
-			rc = 14;
+			warn("Unable to open keyfile %s", keyfile);
+			exit(1);
 		}
 	}
 
