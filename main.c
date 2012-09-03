@@ -57,6 +57,7 @@ main(int argc, char *argv[])
 	char ch;
 	char * passwd;
 	int rc;
+	int i;
 
 #ifdef NEED_WARN_PROGNAME
 	warn_progname = "scrypt";
@@ -103,6 +104,12 @@ main(int argc, char *argv[])
 	/* Zero and free the password. */
 	memset(passwd, 0, strlen(passwd));
 	free(passwd);
+
+	char* buf = malloc(65);
+	for (i = 0; i < 64; i++) {
+		sprintf(buf + i, "%x", dk[i]);
+	}
+	printf("Result: %s\n", buf);
 
 	/* If we failed, print the right error message and exit. */
 	if (rc != 0) {
