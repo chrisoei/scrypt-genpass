@@ -45,13 +45,13 @@
 
 #define ENCBLOCK 65536
 
-static int pickparams(size_t, int,
+static int pickparams(uint32_t, uint32_t,
     int *, uint32_t *, uint32_t *);
-static int checkparams(size_t, int, int, uint32_t, uint32_t);
+static int checkparams(uint32_t, uint32_t, int, uint32_t, uint32_t);
 static int getsalt(uint8_t[32]);
 
 static int
-pickparams(size_t maxmem, int megaops,
+pickparams(uint32_t maxmem, uint32_t megaops,
     int * logN, uint32_t * r, uint32_t * p)
 {
 	size_t memlimit;
@@ -110,7 +110,7 @@ pickparams(size_t maxmem, int megaops,
 }
 
 static int
-checkparams(size_t maxmem, int megaops,
+checkparams(uint32_t maxmem, uint32_t megaops,
     int logN, uint32_t r, uint32_t p)
 {
 	size_t memlimit;
@@ -186,7 +186,7 @@ err0:
 int
 genpass(uint8_t dk[64],
     const uint8_t * passwd, size_t passwdlen,
-    size_t maxmem, int megaops)
+    uint32_t maxmem, uint32_t megaops)
 {
 	uint8_t salt[32];
 	uint8_t hbuf[32];

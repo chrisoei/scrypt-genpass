@@ -51,8 +51,8 @@ main(int argc, char *argv[])
 	FILE * infile = NULL;
 	FILE * outfile = stdout;
 	int dec = 0;
-	size_t maxmem = 1000;
-	int megaops = 5;
+	uint32_t maxmem = 1000;
+	uint32_t megaops = 5;
 	char ch;
 	char * passwd;
 	int rc;
@@ -69,7 +69,7 @@ main(int argc, char *argv[])
 	while ((ch = getopt(argc, argv, "hm:o:")) != -1) {
 		switch (ch) {
 		case 'm':
-			maxmem = strtoumax(optarg, NULL, 0);
+			maxmem = atoi(optarg);
 			break;
 		case 'o':
 			megaops = atoi(optarg);
