@@ -3,7 +3,7 @@ Makefile
 config.h
 *.log
 config.status
-scrypt
+scrypt-genpass
 *.o
 stamp-h1
 .deps/

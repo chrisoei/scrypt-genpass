@@ -26,8 +26,8 @@
  * This file was originally written by Colin Percival as part of the Tarsnap
  * online backup system.
  */
-#ifndef _SCRYPTENC_H_
-#define _SCRYPTENC_H_
+#ifndef _GENPASS_H_
+#define _GENPASS_H_
 
 #include <stdint.h>
 #include <stdio.h>
@@ -72,41 +72,8 @@
  * 13	error reading input file
  */
 
-/**
- * scryptenc_buf(inbuf, inbuflen, outbuf, passwd, passwdlen,
- *     maxmem, maxmemfrac, maxtime):
- * Encrypt inbuflen bytes from inbuf, writing the resulting inbuflen + 128
- * bytes to outbuf.
- */
-int scryptenc_buf(const uint8_t *, size_t, uint8_t *,
-    const uint8_t *, size_t, size_t, double, double);
+int genpass(uint8_t header[96], uint8_t dk[64],
+    const uint8_t * passwd, size_t passwdlen,
+    size_t maxmem, double maxmemfrac, double maxtime);
 
-/**
- * scryptdec_buf(inbuf, inbuflen, outbuf, outlen, passwd, passwdlen,
- *     maxmem, maxmemfrac, maxtime):
- * Decrypt inbuflen bytes from inbuf, writing the result into outbuf and the
- * decrypted data length to outlen.  The allocated length of outbuf must
- * be at least inbuflen.
- */
-int scryptdec_buf(const uint8_t *, size_t, uint8_t *, size_t *,
-    const uint8_t *, size_t, size_t, double, double);
-
-/**
- * scryptenc_file(infile, outfile, passwd, passwdlen,
- *     maxmem, maxmemfrac, maxtime):
- * Read a stream from infile and encrypt it, writing the resulting stream to
- * outfile.
- */
-int scryptenc_file(FILE *, FILE *, const uint8_t *, size_t,
-    size_t, double, double);
-
-/**
- * scryptdec_file(infile, outfile, passwd, passwdlen,
- *     maxmem, maxmemfrac, maxtime):
- * Read a stream from infile and decrypt it, writing the resulting stream to
- * outfile.
- */
-int scryptdec_file(FILE *, FILE *, const uint8_t *, size_t,
-    size_t, double, double);
-
-#endif /* !_SCRYPTENC_H_ */
+#endif /* !_GENPASS_H_ */
