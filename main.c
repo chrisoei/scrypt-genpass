@@ -166,6 +166,7 @@ main(int argc, char *argv[])
 	char buf1[65];
 	bintohex(buf1, 32, passhash);
 	printf("Master hex: %s\n", buf1);
+	memset(buf1, 0, 65);
 
 	uint8_t dk[64];
 	rc = genpass(dk, (uint8_t *)passwd, passwdlen, (void*) *argv,
@@ -179,6 +180,7 @@ main(int argc, char *argv[])
 	char buf[129];
 	bintohex(buf, 64, dk);
 	printf("Pass hex: %s\n", buf);
+	memset(buf, 0, 129);
 
 	if ((outputlength < 3)||(outputlength > 64)) {
 		warn("Unable to generate password for output length %lu", outputlength);
@@ -188,6 +190,7 @@ main(int argc, char *argv[])
 	char output[outputlength + 1];
 	hashtopass(output, outputlength, dk);
 	printf("Generated password: %s\n", output);
+	memset(output, 0, outputlength + 1);
 
 	/* If we failed, print the right error message and exit. */
 	if (rc != 0) {
