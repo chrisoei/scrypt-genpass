@@ -75,7 +75,7 @@ main(int argc, char *argv[])
 	FILE * outfile = stdout;
 	int dec = 0;
 	size_t passwdlen = 0;
-	size_t outputlength = 12;
+	size_t outputlength = 16;
 	uint32_t maxmem = 1000;
 	uint32_t megaops = 32;
 	char ch;
