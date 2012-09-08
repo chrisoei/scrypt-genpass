@@ -182,7 +182,9 @@ scrypt_SOURCES = main.c				\
 			lib/crypto/sha256.c		\
 			lib/crypto/crypto_scrypt-@SCRYPTVER@.c
 
-scrypt_CFLAGS = -I . -I lib/util -I lib/genpass -I lib/crypto
+commithash = $(shell git log --pretty=format:%h -n 1)
+
+scrypt_CFLAGS = -I . -I lib/util -I lib/genpass -I lib/crypto -DSGVERSION=\"$(commithash)\"
 scrypt_LDADD = -lcrypto
 scrypt_man_MANS = scrypt.1
 all: config.h
@@ -274,6 +276,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 check:
+	echo $(commithash)
 	./test/test.bash
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-crypto_scrypt-@SCRYPTVER@.Po@am__quote@

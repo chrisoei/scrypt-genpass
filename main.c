@@ -44,6 +44,7 @@ usage(void)
 	    "usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-n] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
 	fprintf(stderr,
 			"       scrypt-genpass -t\n");
+	fprintf(stderr, "Version: %s\n", SGVERSION);
 	exit(1);
 }
 
