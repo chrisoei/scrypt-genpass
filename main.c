@@ -99,6 +99,7 @@ main(int argc, char *argv[])
 			break;
 		case 'l':
 			outputlength = atoi(optarg);
+			break;
 		case 'm':
 			maxmem = atoi(optarg);
 			break;
