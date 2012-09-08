@@ -273,6 +273,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+check:
+	./test/test.bash
+
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-crypto_scrypt-@SCRYPTVER@.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scrypt-readpass.Po@am__quote@

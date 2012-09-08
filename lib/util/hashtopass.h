@@ -9,4 +9,4 @@
 
 #include "warn.h"
 
-void hashtopass(char* p, size_t len, uint8_t* key);
+void hashtopass(int numbers_only, char* p, size_t len, uint8_t* key);

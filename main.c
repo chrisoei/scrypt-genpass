@@ -41,7 +41,7 @@ usage(void)
 {
 
 	fprintf(stderr,
-	    "usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
+	    "usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-n] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
 	fprintf(stderr,
 			"       scrypt-genpass -t\n");
 	exit(1);
@@ -81,6 +81,7 @@ main(int argc, char *argv[])
 	char ch;
 	char * keyfile = NULL;
 	uint8_t* passwd = NULL;
+	int numbers_only = 0;
 	int rc;
 
 #ifdef NEED_WARN_PROGNAME
@@ -91,7 +92,7 @@ main(int argc, char *argv[])
 		usage();
 
 	/* Parse arguments. */
-	while ((ch = getopt(argc, argv, "htk:l:m:o:p:")) != -1) {
+	while ((ch = getopt(argc, argv, "htk:l:m:no:p:")) != -1) {
 		switch (ch) {
 		case 'k':
 			keyfile = strdup(optarg);
@@ -100,6 +101,9 @@ main(int argc, char *argv[])
 			outputlength = atoi(optarg);
 		case 'm':
 			maxmem = atoi(optarg);
+			break;
+		case 'n':
+			numbers_only++;
 			break;
 		case 'o':
 			megaops = atoi(optarg);
@@ -188,7 +192,7 @@ main(int argc, char *argv[])
 	}
 
 	char output[outputlength + 1];
-	hashtopass(output, outputlength, dk);
+	hashtopass(numbers_only, output, outputlength, dk);
 	printf("Generated password: %s\n", output);
 	memset(output, 0, outputlength + 1);
 
