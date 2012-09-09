@@ -41,10 +41,14 @@ usage(void)
 {
 
   fprintf(stderr,
-      "usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-n] [-o MAXOPS] [-k KEYFILE] [-p PASS] <site>\n");
+      "Usage: scrypt-genpass [-l LEN] [-m MAXMEM] [-n] [-o MAXOPS] [-k KEYFILE]\n");
+  fprintf(stderr,
+      "                      [-p PASS] <site>\n");
   fprintf(stderr,
       "       scrypt-genpass -t\n");
-  fprintf(stderr, "Version: %s\n", SGVERSION);
+  fprintf(stderr,
+      "\nFor documentation, see https://github.com/chrisoei/scrypt-genpass/wiki\n\n");
+  fprintf(stderr, "Commit hash: %s\n", SGVERSION);
   exit(1);
 }
 
@@ -160,13 +164,13 @@ main(int argc, char *argv[])
         size_t n  = fread(combinedkey + sg_parms.passwdlen, keyfilelen, 1, fp);
         fclose(fp);
         if (n != 1) {
-          warn("Unable to read keyfile");
+          warnx("Unable to read keyfile");
           exit(1);
         }
         sg_parms.passwd = combinedkey;
         sg_parms.passwdlen += keyfilelen;
       } else {
-        warn("Unable to allocate memory for combined key");
+        warnx("Unable to allocate memory for combined key");
         exit(1);
       }
     } else {
