@@ -86,7 +86,6 @@ main(int argc, char *argv[])
 {
   sg_parms_t sg_parms;
 
-  int dec = 0;
   char ch;
   int rc;
 
@@ -139,7 +138,7 @@ main(int argc, char *argv[])
   if (!sg_parms.passwd) {
     /* Prompt for a password. */
     if (tarsnap_readpass((char**)&(sg_parms.passwd), "Please enter passphrase",
-        dec ? NULL : "Please confirm passphrase", 1))
+        "Please confirm passphrase", 1))
       exit(1);
   }
   sg_parms.passwdlen = strlen(sg_parms.passwd);
