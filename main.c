@@ -59,7 +59,7 @@ void unit_tests()
 	sha256string(testhash, (uint8_t*) "abc", 3);
 	char testbuf[65];
 	bintohex(testbuf, 32, testhash);
-	if (strcmp(testbuf, 
+	if (strcmp(testbuf,
 			"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")) {
 		fprintf(stderr, "SHA256 test failed\n");
 		exit(1);
@@ -83,6 +83,7 @@ main(int argc, char *argv[])
 	char * keyfile = NULL;
 	uint8_t* passwd = NULL;
 	int numbers_only = 0;
+	int verbose = 0;
 	int rc;
 
 #ifdef NEED_WARN_PROGNAME
@@ -115,6 +116,9 @@ main(int argc, char *argv[])
 			break;
 		case 't':
 			unit_tests();
+			break;
+		case 'v':
+			verbose = 1;
 			break;
 		default:
 			usage();
