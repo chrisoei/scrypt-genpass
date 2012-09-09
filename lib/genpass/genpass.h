@@ -56,20 +56,20 @@
  */
 /**
  * Return codes from scrypt(enc|dec)_(buf|file):
- * 0	success
- * 1	getrlimit or sysctl(hw.usermem) failed
- * 2	clock_getres or clock_gettime failed
- * 3	error computing derived key
- * 4	could not read salt from /dev/urandom
- * 5	error in OpenSSL
- * 6	malloc failed
- * 7	data is not a valid scrypt-encrypted block
- * 8	unrecognized scrypt format
- * 9	decrypting file would take too much memory
- * 10	decrypting file would take too long
- * 11	password is incorrect
- * 12	error writing output file
- * 13	error reading input file
+ * 0  success
+ * 1  getrlimit or sysctl(hw.usermem) failed
+ * 2  clock_getres or clock_gettime failed
+ * 3  error computing derived key
+ * 4  could not read salt from /dev/urandom
+ * 5  error in OpenSSL
+ * 6  malloc failed
+ * 7  data is not a valid scrypt-encrypted block
+ * 8  unrecognized scrypt format
+ * 9  decrypting file would take too much memory
+ * 10 decrypting file would take too long
+ * 11 password is incorrect
+ * 12 error writing output file
+ * 13 error reading input file
  */
 int bintohex(char* outstring, size_t nbytes, uint8_t* data);
 
@@ -80,15 +80,15 @@ int genpass(uint8_t dk[64],
     uint32_t maxmem, uint32_t megaops);
 
 typedef struct {
-	char* keyfile;
-	uint32_t maxmem;
-	uint32_t megaops;
-	int numbers_only;
-	size_t outputlength;
-	uint8_t* passwd;
-	size_t passwdlen;
-	char* site;
-	int verbose;
+  char* keyfile;
+  uint32_t maxmem;
+  uint32_t megaops;
+  int numbers_only;
+  size_t outputlength;
+  uint8_t* passwd;
+  size_t passwdlen;
+  char* site;
+  int verbose;
 } sg_parms_t, *sg_parms_ptr;
 
 #endif /* !_GENPASS_H_ */
