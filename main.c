@@ -69,21 +69,25 @@ void unit_tests()
   exit(0);
 }
 
+void init_parms(sg_parms_ptr p)
+{
+  p->passwdlen = 0;
+  p->outputlength = 16;
+  p->maxmem = 1000;
+  p->megaops = 32;
+  p->keyfile = NULL;
+  p->passwd = NULL;
+  p->numbers_only = 0;
+  p->verbose = 0;
+}
+
 int
 main(int argc, char *argv[])
 {
-  FILE * infile = NULL;
-  FILE * outfile = stdout;
+  sg_parms_t sg_parms;
+
   int dec = 0;
-  size_t passwdlen = 0;
-  size_t outputlength = 16;
-  uint32_t maxmem = 1000;
-  uint32_t megaops = 32;
   char ch;
-  char * keyfile = NULL;
-  uint8_t* passwd = NULL;
-  int numbers_only = 0;
-  int verbose = 0;
   int rc;
 
 #ifdef NEED_WARN_PROGNAME
@@ -93,32 +97,33 @@ main(int argc, char *argv[])
   if (argc < 1)
     usage();
 
+  init_parms(&sg_parms);
   /* Parse arguments. */
   while ((ch = getopt(argc, argv, "htk:l:m:no:p:")) != -1) {
     switch (ch) {
     case 'k':
-      keyfile = strdup(optarg);
+      sg_parms.keyfile = strdup(optarg);
       break;
     case 'l':
-      outputlength = atoi(optarg);
+      sg_parms.outputlength = atoi(optarg);
       break;
     case 'm':
-      maxmem = atoi(optarg);
+      sg_parms.maxmem = atoi(optarg);
       break;
     case 'n':
-      numbers_only++;
+      sg_parms.numbers_only++;
       break;
     case 'o':
-      megaops = atoi(optarg);
+      sg_parms.megaops = atoi(optarg);
       break;
     case 'p':
-      passwd = strdup(optarg);
+      sg_parms.passwd = strdup(optarg);
       break;
     case 't':
       unit_tests();
       break;
     case 'v':
-      verbose = 1;
+      sg_parms.verbose = 1;
       break;
     default:
       usage();
@@ -131,76 +136,76 @@ main(int argc, char *argv[])
   if (argc != 1)
     usage();
 
-  if (!passwd) {
+  if (!sg_parms.passwd) {
     /* Prompt for a password. */
-    if (tarsnap_readpass((char**)&passwd, "Please enter passphrase",
+    if (tarsnap_readpass((char**)&(sg_parms.passwd), "Please enter passphrase",
         dec ? NULL : "Please confirm passphrase", 1))
       exit(1);
   }
-  passwdlen = strlen(passwd);
+  sg_parms.passwdlen = strlen(sg_parms.passwd);
 
-  if (keyfile) {
+  if (sg_parms.keyfile) {
     FILE *fp;
     size_t keyfilelen;
 
-    fp = fopen(keyfile, "rb");
+    fp = fopen(sg_parms.keyfile, "rb");
     if (fp) {
       fseek(fp, 0, SEEK_END);
       keyfilelen = ftell(fp);
       fseek(fp, 0, SEEK_SET);
-      uint8_t* combinedkey = malloc(passwdlen + keyfilelen + 1);
+      uint8_t* combinedkey = malloc(sg_parms.passwdlen + keyfilelen + 1);
       if (combinedkey) {
-        strcpy(combinedkey, passwd);
-        memset(passwd, 0, passwdlen);
-        free(passwd);
-        size_t n  = fread(combinedkey + passwdlen, keyfilelen, 1, fp);
+        strcpy(combinedkey, sg_parms.passwd);
+        memset(sg_parms.passwd, 0, sg_parms.passwdlen);
+        free(sg_parms.passwd);
+        size_t n  = fread(combinedkey + sg_parms.passwdlen, keyfilelen, 1, fp);
         fclose(fp);
         if (n != 1) {
           warn("Unable to read keyfile");
           exit(1);
         }
-        passwd = combinedkey;
-        passwdlen += keyfilelen;
+        sg_parms.passwd = combinedkey;
+        sg_parms.passwdlen += keyfilelen;
       } else {
         warn("Unable to allocate memory for combined key");
         exit(1);
       }
     } else {
-      warn("Unable to open keyfile %s", keyfile);
+      warn("Unable to open keyfile %s", sg_parms.keyfile);
       exit(1);
     }
   }
 
   uint8_t passhash[32];
-  sha256string(passhash, passwd, passwdlen);
+  sha256string(passhash, sg_parms.passwd, sg_parms.passwdlen);
   char buf1[65];
   bintohex(buf1, 32, passhash);
   printf("Master hex: %s\n", buf1);
   memset(buf1, 0, 65);
 
   uint8_t dk[64];
-  rc = genpass(dk, (uint8_t *)passwd, passwdlen, (void*) *argv,
-    maxmem, megaops);
+  rc = genpass(dk, (uint8_t *)sg_parms.passwd, sg_parms.passwdlen, (void*) *argv,
+    sg_parms.maxmem, sg_parms.megaops);
 
   /* Zero and free the password. */
-  memset(passwd, 0, passwdlen);
-  free(passwd);
-  free(keyfile);
+  memset(sg_parms.passwd, 0, sg_parms.passwdlen);
+  free(sg_parms.passwd);
+  free(sg_parms.keyfile);
 
   char buf[129];
   bintohex(buf, 64, dk);
   printf("Pass hex: %s\n", buf);
   memset(buf, 0, 129);
 
-  if ((outputlength < 3)||(outputlength > 64)) {
-    warn("Unable to generate password for output length %lu", outputlength);
+  if ((sg_parms.outputlength < 3)||(sg_parms.outputlength > 64)) {
+    warn("Unable to generate password for output length %lu", sg_parms.outputlength);
     exit(1);
   }
 
-  char output[outputlength + 1];
-  hashtopass(numbers_only, output, outputlength, dk);
+  char output[sg_parms.outputlength + 1];
+  hashtopass(sg_parms.numbers_only, output, sg_parms.outputlength, dk);
   printf("Generated password: %s\n", output);
-  memset(output, 0, outputlength + 1);
+  memset(output, 0, sg_parms.outputlength + 1);
 
   /* If we failed, print the right error message and exit. */
   if (rc != 0) {
@@ -246,7 +251,7 @@ main(int argc, char *argv[])
       warn("Error reading file: %s", argv[0]);
       break;
     case 14:
-      warn("Unable to open keyfile: %s", keyfile);
+      warn("Unable to open keyfile: %s", sg_parms.keyfile);
       break;
     case 15:
       warn("Unable to allocate memory for combined key");
