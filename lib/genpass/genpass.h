@@ -79,4 +79,16 @@ int genpass(uint8_t dk[64],
     const uint8_t * passwd, size_t passwdlen, char* site,
     uint32_t maxmem, uint32_t megaops);
 
+typedef struct {
+	char* keyfile;
+	uint32_t maxmem;
+	uint32_t megaops;
+	int numbers_only;
+	size_t outputlength;
+	uint8_t* passwd;
+	size_t passwdlen;
+	char* site;
+	int verbose;
+} sg_parms_t, *sg_parms_ptr;
+
 #endif /* !_GENPASS_H_ */
